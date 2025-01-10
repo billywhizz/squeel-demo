@@ -72,8 +72,8 @@ class VTable {
         for (let i = 0; i < rowLen; i++) {
           const zscore = zscores[i]
           const pv = Math.floor((stats.pValue(zscore) * 10000)) / 100
-          tRows[i].cells[j + 1].innerHTML = gaugeHtml(pv)
-          tRows[i].cells[j + 1].title = `${pv.toFixed(0)}th percentile\n${this.settings.titles[key] || key}`
+          tRows[i].cells[j].innerHTML = gaugeHtml(pv)
+          tRows[i].cells[j].title = `${pv.toFixed(0)}th percentile\n${this.settings.titles[key] || key}`
         }
       }
     }
@@ -136,7 +136,7 @@ class VTable {
     }
     for (let i = 0; i < rowLen; i++) {
       for (let j = 0; j < keyLen; j++) {
-        rows[i].cells[j + 1].innerText = this.rows[i][this.keys[j]]
+        rows[i].cells[j].innerText = this.rows[i][this.keys[j]]
       }
       if (this.rows[i].highlighted) {
         rows[i].highlight()
@@ -170,9 +170,10 @@ function showTable (keys, rows, container, settings = {}) {
   const body = table.createTBody()
   const newRow = head.insertRow(-1)
   newRow.classList.add('header')
-  const newCell = document.createElement('th')
-  newCell.innerText = 'rank'
-  newRow.appendChild(newCell)
+
+//  const newCell = document.createElement('th')
+//  newCell.innerText = 'rank'
+//  newRow.appendChild(newCell)
   keys = keys.filter(k => !settings.hidden.includes(k))
   const vtable = new VTable(table, head, body, container, keys, rows)
   Object.assign(vtable.settings, settings)
@@ -207,9 +208,9 @@ function showTable (keys, rows, container, settings = {}) {
         row.highlighted = false
       }
     }
-    const newCell = newRow.insertCell(-1)
-    const newText = document.createTextNode(rank++)
-    newCell.appendChild(newText)
+//    const newCell = newRow.insertCell(-1)
+//    const newText = document.createTextNode(rank++)
+//    newCell.appendChild(newText)
     for (const key of keys) {
       const newCell = newRow.insertCell(-1)
       const newText = document.createTextNode(row[key])
