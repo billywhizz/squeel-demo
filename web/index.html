@@ -176,9 +176,28 @@ table.player tr.selectrowsel {
 <script type="module">
 import { Database } from './db.js'
 import { showTable, showComparison, getTeamImage } from './ui.js'
+import init, { compressGzip, decompressGzip } from './wasm_gzip.js'
 
 function round (val) {
   return Math.floor(val * 100) / 100
+}
+
+function onFileSelect (event) {
+  const fileList = event.target.files
+  const reader = new FileReader()
+  reader.addEventListener('load', async (event) => {
+    let buf = event.target.result
+    if (file.name.indexOf('.gz') > -1) {
+      const decompressed = decompressGzip(new Uint8Array(buf))
+      buf = decompressed.buffer
+    }
+    const result = await db.checkpoint('main', buf)
+    const { rc, logSize, framesCheckpointed } = result
+    console.log(`checkpoint ${rc} logSize ${logSize} frames ${framesCheckpointed}`)
+  })
+  const file = fileList[0]
+  reader.readAsArrayBuffer(file)
+  fileSelector.value = null
 }
 
 function calculateStats (player) {
@@ -295,6 +314,7 @@ const settings = {
 }
 
 async function main () {
+  init()
   const url = new URL(window.location.href)
   let json
   if (url.hash) {
